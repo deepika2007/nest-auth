@@ -7,7 +7,8 @@ import { loginDTO } from './dto/loginUser.dto';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService,
+    constructor(
+        private readonly authService: AuthService,
         private readonly userService: UserService
     ) { }
 
@@ -38,6 +39,7 @@ export class AuthController {
     async getProfile(@Request() req) {
         const userId = req.user.sub
         const user = await this.userService.getUserById(userId)
+        return user
     }
 
 }

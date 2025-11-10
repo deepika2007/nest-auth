@@ -46,6 +46,10 @@ export class UserService {
     }
 
     async getUserById(id: string) {
-        return await this.userModel.findOne({ _id: id })
+        try {
+            return await this.userModel.findById(id, ['id', 'name', 'role', 'email'])
+        } catch (error) {
+            throw error
+        }
     }
 }
