@@ -10,7 +10,7 @@ import { loginDTO } from 'src/auth/dto/loginUser.dto';
 export class UserService {
     constructor(@InjectModel(User.name) private readonly userModel: Model<User>) { }
 
-    async createUser(@Body() registerDTO: registerDTO) {
+    async create(@Body() registerDTO: registerDTO) {
         try {
             return await this.userModel.create({
                 name: registerDTO.name,
@@ -21,6 +21,14 @@ export class UserService {
             if (error?.code === 11000) {
                 throw new ConflictException('Email already exist.')
             }
+            throw error
+        }
+    }
+
+    async findOne(id: string) {
+        try {
+            return await this.userModel.findById(id, ['id', 'name', 'role', 'email'])
+        } catch (error) {
             throw error
         }
     }
@@ -40,14 +48,6 @@ export class UserService {
             }
 
             return user
-        } catch (error) {
-            throw error
-        }
-    }
-
-    async getUserById(id: string) {
-        try {
-            return await this.userModel.findById(id, ['id', 'name', 'role', 'email'])
         } catch (error) {
             throw error
         }
