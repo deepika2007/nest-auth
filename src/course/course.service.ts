@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { Model } from 'mongoose';
@@ -20,6 +20,9 @@ export class CourseService {
         description: createCourseDto.description
       })
     } catch (error) {
+      if (error?.code === 11000) {
+        throw new ConflictException('Name already taken.')
+      }
       throw error
     }
   }
@@ -28,15 +31,23 @@ export class CourseService {
     return await this.courseModel.find()
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     return await this.courseModel.findById(id)
   }
 
-  async update(id: number, updateCourseDto: UpdateCourseDto) {
-    return await this.courseModel.findByIdAndUpdate(id, updateCourseDto)
+  async update(id: string, updateCourseDto: UpdateCourseDto) {
+    try {
+      return await this.courseModel.findByIdAndUpdate(id, updateCourseDto, { new: true })
+    }
+    catch (error) {
+      if (error?.code === 11000) {
+        throw new ConflictException('Name already taken.')
+      }
+      throw error
+    }
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     return await this.courseModel.findByIdAndDelete(id)
   }
 }

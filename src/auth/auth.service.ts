@@ -17,7 +17,7 @@ export class AuthService {
             const hash = await bcrypt.hash(registerUserDTO.password, saltRound)
             const user = await this.userService.create({ ...registerUserDTO, password: hash })
 
-            const payload = { sub: user._id, }
+            const payload = { sub: user._id, role: user.role }
             const token = await this.jwtService.signAsync(payload)
             return token
         } catch (error) {
@@ -28,7 +28,7 @@ export class AuthService {
     async loginUser(loginUserDTO: loginDTO) {
         try {
             const user = await this.userService.loginUser(loginUserDTO)
-            const payload = { sub: user._id }
+            const payload = { sub: user._id, role: user.role }
             const token = await this.jwtService.signAsync(payload)
             return token
         } catch (error) {

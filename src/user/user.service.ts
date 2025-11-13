@@ -15,7 +15,8 @@ export class UserService {
             return await this.userModel.create({
                 name: registerDTO.name,
                 email: registerDTO.email,
-                password: registerDTO.password
+                password: registerDTO.password,
+                role: registerDTO.role
             })
         } catch (error) {
             if (error?.code === 11000) {
