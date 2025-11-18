@@ -12,6 +12,6 @@ export class registerDTO {
     @IsString()
     password: string;
 
-    @IsString()
+    @IsEnum(Role)
     role: string;
 }
